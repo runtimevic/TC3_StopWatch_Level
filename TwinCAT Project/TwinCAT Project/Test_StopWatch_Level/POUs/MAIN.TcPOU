@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.5">
+  <POU Name="MAIN" Id="{a0f2ab23-8e12-45a0-b18b-744a7b3e2756}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	Stopwatch1 : FB_StopWatch_Level;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Stopwatch1(bSTART:= , bRESET:= , Elapsed_Time=> );]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.5">
+  <POU Name="FB_StopWatch_Level" Id="{7b453012-2bbd-4b0c-b96d-849b85379e98}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_StopWatch_Level
+VAR_INPUT
+	bSTART				:	BOOL;    // START
+	bRESET				: 	BOOL;	// RESET
+END_VAR
+VAR_OUTPUT
+	Elapsed_Time		: 	TIME;
+END_VAR
+VAR
+	{attribute 'hide' := ''}
+	Time_Count			: 	UDINT;
+	{attribute 'hide' := ''}
+	Current_CycleTime	: 	UDINT;
+	{attribute 'hide' := ''}
+	COUNT_TIME: BOOL 	:= 	FALSE;
+	{attribute 'hide' := ''}
+	fbGetTaskIndex		: 	GETCURTASKINDEX;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Count StopWatch.
+IF bSTART AND NOT bRESET THEN
+	fbGetTaskIndex();
+	COUNT_TIME := TRUE;
+	Current_CycleTime := TwinCAT_SystemInfoVarList._TaskInfo[fbGetTaskIndex.index].CycleTime (*100ns unit*);
+END_IF
+
+// Stop StopWatch.
+IF NOT bSTART OR bRESET THEN
+	COUNT_TIME := FALSE;
+END_IF
+
+// Reset StopWatch.
+IF bRESET THEN	
+	Time_Count := 0;
+	Elapsed_Time := T#0MS;
+END_IF
+
+IF COUNT_TIME THEN
+	Time_Count := Time_Count + Current_CycleTime;
+	IF Time_Count > 10000 THEN		
+		Elapsed_Time := Elapsed_Time + UDINT_TO_TIME(Time_Count/10000);
+		Time_Count := 0;
+	END_IF
+END_IF]]></ST>
+    </Implementation>
+    <LineIds Name="FB_StopWatch_Level">
+      <LineId Id="57" Count="0" />
+      <LineId Id="31" Count="4" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="39" Count="10" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
